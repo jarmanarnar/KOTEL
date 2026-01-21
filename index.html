@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>פתק לכותל | חוויה דיגיטלית</title>
+    <title>פתק לכותל | חוויה ויזואלית</title>
     <meta name="theme-color" content="#d4c5a0">
     
     <style>
@@ -11,18 +11,17 @@
            1. CORE & RESET
            ========================================= */
         :root {
-            /* Authentic Kotel Palette - Warmer/Dirtier */
             --stone-base: #dcd0ba; 
             --stone-dark: #b8aa90;
             --mortar-dark: #2b2218; 
-            
-            /* Vegetation */
             --plant-green-1: #3f5536;
             --plant-green-2: #587045;
             --plant-green-light: #7a9460;
-            
-            /* UI Palette */
             --accent: #b8965e;
+            --accent-light: #fdf6e9;
+            --text-main: #2d2d2d;
+            --text-muted: #757575;
+            --bg-menu: #f8f6f1;
             --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         }
 
@@ -36,41 +35,39 @@
             padding: 0;
             width: 100%;
             height: 100%;
-            overflow: hidden; /* No Scroll on Body */
+            overflow: hidden;
             font-family: var(--font-family);
             background: #110f0c;
         }
 
         /* =========================================
-           2. THE WALL (SCENE) - FLEX LAYOUT
+           2. THE WALL (SCENE)
            ========================================= */
         #wall-container {
             width: 100%;
-            height: 100%; /* Fill screen exactly */
-            overflow: hidden; /* No Scroll inside */
+            height: 100%;
+            overflow: hidden;
             position: relative;
             background-color: var(--mortar-dark);
             background-image: url("data:image/svg+xml,%3Csvg width='200' height='200' viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23noise)' opacity='0.4'/%3E%3C/svg%3E");
-            cursor: default;
-            
-            /* Flex Layout for Rows */
+            cursor: grab;
             display: flex;
             flex-direction: column;
-            padding: 10px; /* Outer frame padding */
-            gap: 6px; /* Vertical gap between rows */
+            padding: 10px;
+            gap: 6px;
         }
 
         .stone-row {
             display: flex;
             width: 100%;
-            flex: 1; /* Stretch to fill available vertical space equally */
-            min-height: 0; /* Allow shrinking if needed */
+            flex: 1;
+            min-height: 0;
             padding: 0 4px;
             align-items: center;
         }
 
         .crevice-spacer {
-            width: 8px; 
+            width: 12px;
             height: 90%;
             position: relative;
             flex-shrink: 0;
@@ -80,7 +77,6 @@
             z-index: 10;
         }
 
-        /* The Stone Block */
         .stone {
             flex-grow: 1;
             height: 100%;
@@ -90,8 +86,6 @@
             border-radius: 2px;
             border: 1px solid rgba(0,0,0,0.15);
             box-shadow: inset 0 0 20px rgba(0,0,0,0.1);
-            
-            /* Texture */
             background-image: 
                 radial-gradient(circle at 30% 20%, rgba(0,0,0,0.08) 1px, transparent 4px),
                 radial-gradient(circle at 80% 80%, rgba(0,0,0,0.08) 2px, transparent 5px),
@@ -115,23 +109,21 @@
             background-image: radial-gradient(circle at 50% 100%, rgba(80, 100, 60, 0.15), transparent 60%);
             pointer-events: none;
         }
-
         .stone.weathered { background-color: #cbbba0; }
 
-        /* Interaction Logic */
-        body.placing-mode .stone { cursor: not-allowed; opacity: 0.8; }
-        body.placing-mode #wall-container { cursor: none; }
+        body.placing-mode #wall-container,
+        body.placing-mode #wall-container * { cursor: none !important; }
+        body.placing-mode .stone { opacity: 0.8; }
 
         /* =========================================
-           3. NOTES (Responsive % Sizing)
+           3. NOTES
            ========================================= */
         .folded-note {
             position: absolute;
-            /* Use slightly smaller px or responsive units, but px is sharper for small objects */
-            width: 20px; 
-            height: 20px;
+            width: 30px; 
+            height: 30px;
             background: #fff;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.6);
+            box-shadow: 0 1px 4px rgba(0,0,0,0.6);
             z-index: 20;
             cursor: pointer;
             transition: transform 0.2s;
@@ -139,15 +131,15 @@
         }
 
         .folded-note:hover {
-            transform: scale(2) !important;
+            transform: scale(1.5) !important;
             z-index: 100;
             box-shadow: 0 5px 15px rgba(0,0,0,0.5);
         }
 
         .ambient-note {
             position: absolute;
-            width: 14px;
-            height: 14px;
+            width: 20px;
+            height: 20px;
             box-shadow: 0 1px 2px rgba(0,0,0,0.8);
             clip-path: polygon(5% 0, 100% 0, 100% 95%, 95% 100%, 0 100%, 0 5%);
             pointer-events: none;
@@ -161,30 +153,26 @@
 
         #ghost-note {
             position: fixed;
-            width: 22px;
-            height: 22px;
+            width: 34px;
+            height: 34px;
             background: white;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.4);
             pointer-events: none;
             z-index: 1000;
             display: none;
             transform: translate(-50%, -50%);
-            border-radius: 2px;
+            border-radius: 3px;
             clip-path: polygon(10% 0, 100% 0, 100% 90%, 90% 100%, 0 100%, 0 10%);
+            transition: background-color 0.2s, box-shadow 0.2s;
         }
-        #ghost-note.invalid { background-color: #ff5555; opacity: 0.5; }
-        #ghost-note.valid { background-color: #ffffff; opacity: 1; box-shadow: 0 0 15px rgba(255, 255, 255, 0.9); }
+
+        #ghost-note.invalid { background-color: #ff5555; opacity: 0.6; }
+        #ghost-note.valid { background-color: #ffffff; opacity: 1; box-shadow: 0 0 20px rgba(255, 255, 255, 0.9); }
 
         /* =========================================
            4. VEGETATION
            ========================================= */
-        .plant {
-            position: absolute;
-            width: 0; height: 0;
-            pointer-events: none;
-            z-index: 50;
-        }
-        
+        .plant { position: absolute; width: 0; height: 0; pointer-events: none; z-index: 50; }
         .plant-leaf {
             position: absolute;
             background: var(--plant-green-1);
@@ -201,29 +189,28 @@
         .top-bar {
             position: fixed; top: 0; left: 0; right: 0;
             padding: 15px 20px;
-            display: flex; justify-content: space-between; align-items: center;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent);
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
             z-index: 100; color: white; pointer-events: none;
         }
         .top-bar > * { pointer-events: auto; }
 
-        .app-title { font-weight: 700; font-size: 1.2rem; text-shadow: 0 2px 4px rgba(0,0,0,0.8); }
-
         .menu-btn {
-            background: rgba(255,255,255,0.1); backdrop-filter: blur(4px);
+            background: rgba(255,255,255,0.15); backdrop-filter: blur(4px);
             border: 1px solid rgba(255,255,255,0.25); color: white;
-            padding: 8px 16px; border-radius: 20px; font-size: 0.9rem; cursor: pointer;
-        }
-
-        .fab-write {
-            position: fixed; bottom: 30px; left: 30px;
-            width: 64px; height: 64px; border-radius: 50%;
-            background: #fff; color: var(--accent);
-            box-shadow: 0 4px 25px rgba(0,0,0,0.6); border: none; font-size: 32px;
+            padding: 10px; width: 44px; height: 44px;
+            border-radius: 12px; font-size: 1.2rem; cursor: pointer;
             display: flex; align-items: center; justify-content: center;
-            z-index: 90; cursor: pointer; transition: transform 0.2s;
+            transition: background 0.2s;
         }
-        .fab-write:active { transform: scale(0.9); }
+        .menu-btn:hover { background: rgba(255,255,255,0.25); }
+
+        .app-title { 
+            font-weight: 700; font-size: 1.2rem; 
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8); 
+        }
 
         /* =========================================
            6. MODALS
@@ -239,16 +226,15 @@
 
         .paper-modal {
             background: #fffdf5; width: 90%; max-width: 400px; padding: 30px;
-            border-radius: 4px;
+            border-radius: 16px;
             box-shadow: 0 10px 50px rgba(0,0,0,0.7);
             transform: translateY(20px); 
-            transition: transform 0.3s, opacity 0.3s, scale 0.3s;
+            transition: transform 0.3s, opacity 0.3s;
             background-image: linear-gradient(#e6e6e6 1px, transparent 1px);
             background-size: 100% 28px; line-height: 28px;
         }
         .modal-overlay.active .paper-modal { transform: translateY(0); }
-        .paper-modal.folding { transform: scale(0.05) rotate(20deg) !important; opacity: 0; }
-
+        
         .paper-modal h2 {
             margin: 0 0 20px 0; color: var(--accent); text-align: center;
             border-bottom: 2px solid var(--accent); padding-bottom: 10px;
@@ -258,69 +244,152 @@
             resize: none; font-family: inherit; font-size: 1.1rem; outline: none; color: #444;
         }
         .modal-actions { margin-top: 20px; display: flex; gap: 10px; }
-        .btn { flex: 1; padding: 12px; border-radius: 8px; font-weight: 600; font-size: 1rem; border: none; cursor: pointer; }
+        .btn { flex: 1; padding: 12px; border-radius: 12px; font-weight: 600; font-size: 1rem; border: none; cursor: pointer; }
         .btn-cancel { background: #f0f0f0; color: #666; }
         .btn-submit { background: var(--accent); color: white; }
 
         .instruction-banner {
-            position: fixed; top: 80px; left: 50%; transform: translateX(-50%);
-            background: rgba(0,0,0,0.85); color: #fff;
-            padding: 12px 24px; border-radius: 30px;
-            font-weight: 500; font-size: 0.95rem;
-            z-index: 150; display: none; pointer-events: none;
-            border: 1px solid rgba(255,255,255,0.2);
+            position: fixed; 
+            bottom: 40px; 
+            left: 50%; transform: translateX(-50%) translateY(20px);
+            background: rgba(35, 35, 35, 0.95);
+            backdrop-filter: blur(4px);
+            color: #fff;
+            padding: 12px 24px; 
+            border-radius: 8px;
+            font-weight: 500; 
+            font-size: 0.95rem;
+            z-index: 150; 
+            display: none; 
+            pointer-events: none;
+            border: 1px solid rgba(255,255,255,0.15);
             white-space: nowrap;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            opacity: 0;
+            transition: opacity 0.3s, transform 0.3s;
         }
+        .instruction-banner.visible { opacity: 1; transform: translateX(-50%) translateY(0); }
 
         .toast {
-            position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%) scale(0.9);
-            background: #333; color: white; padding: 12px 24px; border-radius: 50px;
-            opacity: 0; pointer-events: none; transition: all 0.3s; z-index: 500;
+            position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%) translateY(20px);
+            background: rgba(35, 35, 35, 0.95); backdrop-filter: blur(4px);
+            color: white; padding: 12px 24px; border-radius: 8px;
+            opacity: 0; pointer-events: none; 
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 500; box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.15); font-weight: 500;
         }
-        .toast.show { opacity: 1; transform: translateX(-50%) scale(1); }
-        .toast.error { background: #d32f2f; }
+        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+        .toast.error { background: #d32f2f; border-color: #ef5350; }
 
+        /* --- SIDE MENU (REDESIGNED) --- */
         .side-menu {
             position: fixed; top: 0; right: 0; bottom: 0; width: 300px;
-            background: #fdfbf5; z-index: 300;
-            transform: translateX(100%); transition: transform 0.3s ease;
-            box-shadow: -5px 0 30px rgba(0,0,0,0.4); display: flex; flex-direction: column;
+            background: var(--bg-menu); z-index: 300;
+            transform: translateX(100%); 
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: -5px 0 30px rgba(0,0,0,0.2); 
+            display: flex; flex-direction: column;
+            padding: 16px;
         }
         .side-menu.open { transform: translateX(0); }
-        .menu-header { padding: 20px; background: #eee; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #ddd; }
-        .notes-list { flex: 1; overflow-y: auto; padding: 20px; }
-        .list-item { border-bottom: 1px solid #eee; padding: 15px 0; cursor: pointer; }
-        .list-item:hover { background: #f0f0f0; }
         
+        .menu-header { 
+            padding: 10px 4px 20px 4px; 
+            display: flex; justify-content: space-between; align-items: center; 
+        }
+        .menu-title { font-weight: 800; font-size: 1.4rem; color: var(--text-main); letter-spacing: -0.5px; }
+        .close-menu-btn { 
+            border: none; background: #eaeaea; color: #555; 
+            width: 32px; height: 32px; border-radius: 50%; 
+            font-size: 1rem; cursor: pointer; 
+            display: flex; align-items: center; justify-content: center;
+            transition: background 0.2s;
+        }
+        .close-menu-btn:hover { background: #ddd; }
+
+        .menu-content { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
+        
+        /* Menu Items (Cards) */
+        .menu-item {
+            padding: 16px 20px;
+            background: #fff;
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: space-between;
+            color: var(--text-main);
+            transition: transform 0.1s, box-shadow 0.2s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+            border: 1px solid rgba(0,0,0,0.04);
+        }
+        .menu-item:hover { 
+            transform: translateY(-1px); 
+            box-shadow: 0 4px 8px rgba(0,0,0,0.06); 
+        }
+        .menu-item:active { transform: scale(0.98); }
+        
+        .menu-item-content { display: flex; align-items: center; gap: 12px; }
+        .menu-icon { font-size: 1.2rem; }
+        .menu-text { font-weight: 600; font-size: 1rem; }
+        .menu-item .arrow { color: #ccc; font-size: 1.2rem; }
+
+        /* Notes List View */
+        .notes-list { display: flex; flex-direction: column; gap: 10px; }
+        .list-item { 
+            padding: 16px 20px; 
+            background: #fff;
+            border-radius: 12px;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+            border: 1px solid rgba(0,0,0,0.04);
+            transition: all 0.2s;
+        }
+        .list-item:hover { transform: translateY(-1px); box-shadow: 0 4px 8px rgba(0,0,0,0.06); }
+        .list-item-date { font-size: 0.75rem; color: var(--accent); font-weight: 600; margin-bottom: 6px; }
+        .list-item-text { font-size: 0.95rem; color: #444; line-height: 1.4; }
+
+        /* View Navigation Header */
+        .menu-subheader {
+            padding: 12px 0;
+            margin-bottom: 8px;
+            display: flex; align-items: center;
+            font-size: 0.95rem; color: var(--text-muted);
+            font-weight: 500;
+            cursor: pointer;
+        }
+        .menu-subheader:hover { color: var(--accent); }
+        
+        .about-content { 
+            padding: 20px; background: #fff; border-radius: 12px; 
+            border: 1px solid rgba(0,0,0,0.04); color: #444; line-height: 1.6; 
+        }
+        .about-content h4 { margin-top: 0; color: var(--accent); margin-bottom: 10px;}
+
     </style>
 </head>
 <body>
 
     <!-- SCENE -->
-    <div id="wall-container">
-        <!-- JS will populate rows and stones -->
-    </div>
+    <div id="wall-container"></div>
 
     <!-- UI -->
     <div class="top-bar">
-        <div class="app-title">פתק לכותל</div>
-        <button class="menu-btn" onclick="app.toggleMenu()">
-            <span>☰</span> הפתקים שלי
+        <button class="menu-btn" onclick="app.toggleMenu()" aria-label="תפריט">
+            ☰
         </button>
+        <div class="app-title">פתק לכותל</div>
+        <div style="width: 44px;"></div>
     </div>
 
-    <button class="fab-write" onclick="app.openWriteModal()">
-        <span>+</span>
-    </button>
-
+    <!-- INSTRUCTION -->
     <div class="instruction-banner" id="instruction-banner">
-        גרור לחריץ פנוי בין האבנים והקלק
+        הקלק על חריץ פנוי להנחת הפתק
     </div>
 
     <!-- GHOST CURSOR -->
     <div id="ghost-note"></div> 
 
-    <!-- MODALS -->
+    <!-- WRITE MODAL -->
     <div class="modal-overlay" id="write-modal">
         <div class="paper-modal" id="paper-modal-content">
             <h2>כתיבת פתק</h2>
@@ -332,6 +401,7 @@
         </div>
     </div>
 
+    <!-- READ MODAL -->
     <div class="modal-overlay" id="read-modal">
         <div class="paper-modal" style="background-image:none; background-color: white;">
             <h2 id="read-date" style="font-size: 1rem; border:none; color:#666;"></h2>
@@ -342,15 +412,15 @@
         </div>
     </div>
 
-    <!-- MENU -->
+    <!-- SIDE MENU -->
     <div class="side-menu" id="side-menu">
         <div class="menu-header">
-            <h3>הפתקים שלי</h3>
-            <button onclick="app.toggleMenu()" style="border:none; background:none; font-size:1.2rem; cursor:pointer;">✕</button>
+            <span class="menu-title" id="menu-title">תפריט</span>
+            <button class="close-menu-btn" onclick="app.toggleMenu()">✕</button>
         </div>
-        <div class="notes-list" id="notes-list-container"></div>
-        <div style="padding: 20px; border-top:1px solid #eee;">
-            <button class="btn btn-cancel" style="width:100%" onclick="app.resetData()">איפוס נתונים</button>
+        
+        <div class="menu-content" id="menu-content">
+            <!-- Content injected by JS -->
         </div>
     </div>
 
@@ -362,14 +432,11 @@
                 this.wallContainer = document.getElementById('wall-container');
                 this.pendingNoteText = '';
                 this.isPlacing = false;
+                this.menuState = 'main'; 
                 
                 this.initWall();
                 this.loadNotesToWall();
-                this.renderMenu();
                 
-                // --- Event Listeners ---
-                
-                // Window Resize: Debounced re-init to keep proportions
                 let resizeTimeout;
                 window.addEventListener('resize', () => {
                     clearTimeout(resizeTimeout);
@@ -383,71 +450,52 @@
                 this.wallContainer.addEventListener('mousemove', (e) => this.handleMouseMove(e));
                 this.wallContainer.addEventListener('touchmove', (e) => {
                     if(!this.isPlacing) return;
-                    e.preventDefault(); // Prevent scroll while placing on mobile
+                    e.preventDefault(); 
                     const touch = e.touches[0];
                     const target = document.elementFromPoint(touch.clientX, touch.clientY);
-                    this.handleMouseMove({ clientX: touch.clientX, clientY: touch.clientY, target: target });
+                    this.handleMouseMove({ clientX: touch.clientX, clientY: touch.clientY, target: target, isTouch: true });
                 }, { passive: false });
             }
 
-            /* --- 1. WALL GENERATION (RESPONSIVE PROPORTIONS) --- */
+            /* --- 1. WALL GENERATION --- */
             initWall() {
-                this.wallContainer.innerHTML = ''; // Clear existing wall
+                this.wallContainer.innerHTML = ''; 
                 const fragment = document.createDocumentFragment();
-                
-                // Dynamic sizing:
-                // Target: Row height ~110px, Stone width ~150px
                 const viewportHeight = window.innerHeight;
                 const viewportWidth = window.innerWidth;
-                
                 const approxRowHeight = 110;
                 const approxStoneWidth = 150;
-
                 const ROWS = Math.floor(viewportHeight / approxRowHeight);
                 const stonesPerRowBase = Math.floor(viewportWidth / approxStoneWidth);
 
                 for (let r = 0; r < ROWS; r++) {
                     const row = document.createElement('div');
                     row.className = 'stone-row';
-                    
-                    // Calculate stones for this specific row with some variance
                     const numStones = Math.max(2, stonesPerRowBase + (Math.random() > 0.5 ? 1 : 0));
                     
                     for(let s = 0; s < numStones; s++) {
                         const stone = document.createElement('div');
                         stone.className = 'stone';
-                        
                         const rand = Math.random();
                         if(rand > 0.7) stone.classList.add('weathered');
                         if(rand < 0.3) stone.classList.add('mossy');
-                        
-                        // Slightly random growth to make stones uneven width
                         stone.style.flexGrow = Math.random() * 1.5 + 0.8;
-                        
                         const hue = 35 + Math.random() * 15;
                         const sat = 15 + Math.random() * 15;
                         const lig = 75 + Math.random() * 15;
                         stone.style.backgroundColor = `hsl(${hue}, ${sat}%, ${lig}%)`;
-
                         row.appendChild(stone);
 
                         if (s < numStones - 1) {
                             const spacer = document.createElement('div');
                             spacer.className = 'crevice-spacer';
-                            
-                            if (Math.random() < 0.95) {
-                                this.createAmbientNoteCluster(spacer);
-                            }
-                            if (Math.random() < 0.40) {
-                                this.createVegetation(spacer);
-                            }
-
+                            if (Math.random() < 0.95) this.createAmbientNoteCluster(spacer);
+                            if (Math.random() < 0.40) this.createVegetation(spacer);
                             row.appendChild(spacer);
                         }
                     }
                     fragment.appendChild(row);
                 }
-                
                 this.wallContainer.appendChild(fragment);
             }
 
@@ -458,15 +506,12 @@
                     ambient.className = 'ambient-note';
                     const colorClass = 'note-c' + (Math.floor(Math.random() * 5) + 1);
                     ambient.classList.add(colorClass);
-
                     const rot = Math.floor(Math.random() * 180) - 90;
                     const yOffset = Math.floor(Math.random() * 30) - 15;
                     const xOffset = Math.floor(Math.random() * 8) - 4;
                     const z = Math.floor(Math.random() * 10);
-
                     ambient.style.transform = `translate(${xOffset}px, ${yOffset}px) rotate(${rot}deg)`;
                     ambient.style.zIndex = z;
-                    
                     container.appendChild(ambient);
                 }
             }
@@ -476,7 +521,6 @@
                 plant.className = 'plant';
                 if(Math.random() > 0.5) plant.classList.add('bushy');
                 if(Math.random() > 0.8) plant.classList.add('dry');
-
                 const numLeaves = Math.floor(Math.random() * 8) + 5;
                 for(let i=0; i<numLeaves; i++) {
                     const leaf = document.createElement('div');
@@ -484,11 +528,9 @@
                     const size = Math.random() * 20 + 10;
                     leaf.style.width = size + 'px';
                     leaf.style.height = (size * 0.7) + 'px';
-                    
                     const rot = Math.random() * 200 - 100;
                     const dist = Math.random() * 20;
                     if(Math.random() > 0.7) leaf.style.background = 'var(--plant-green-light)';
-
                     leaf.style.transform = `rotate(${rot}deg) translateX(${dist}px)`;
                     plant.appendChild(leaf);
                 }
@@ -509,8 +551,6 @@
             /* --- 3. UI FLOW --- */
             openWriteModal() {
                 const modal = document.getElementById('write-modal');
-                const content = document.getElementById('paper-modal-content');
-                content.classList.remove('folding');
                 modal.classList.add('active');
                 setTimeout(() => document.getElementById('note-text').focus(), 100);
             }
@@ -522,46 +562,44 @@
             startPlacing() {
                 const text = document.getElementById('note-text').value.trim();
                 if (!text) return;
-
                 this.pendingNoteText = text;
-                const content = document.getElementById('paper-modal-content');
-                content.classList.add('folding');
+                this.closeWriteModal();
+                this.isPlacing = true;
+                document.body.classList.add('placing-mode');
+                
+                const banner = document.getElementById('instruction-banner');
+                banner.style.display = 'block';
+                banner.offsetHeight; 
+                banner.classList.add('visible');
 
-                setTimeout(() => {
-                    this.closeWriteModal();
-                    this.isPlacing = true;
-                    document.body.classList.add('placing-mode');
-                    document.getElementById('instruction-banner').style.display = 'block';
-                    document.querySelector('.fab-write').style.display = 'none';
-                    const ghost = document.getElementById('ghost-note');
-                    ghost.style.display = 'block';
-                }, 300);
+                const ghost = document.getElementById('ghost-note');
+                ghost.style.display = 'block';
             }
 
             stopPlacing() {
                 this.isPlacing = false;
                 document.body.classList.remove('placing-mode');
-                document.getElementById('instruction-banner').style.display = 'none';
-                document.querySelector('.fab-write').style.display = 'flex';
+                
+                const banner = document.getElementById('instruction-banner');
+                banner.classList.remove('visible');
+                setTimeout(() => banner.style.display = 'none', 300);
+
                 document.getElementById('ghost-note').style.display = 'none';
             }
 
             /* --- 4. INTERACTION --- */
             handleMouseMove(e) {
                 if (!this.isPlacing) return;
-                
                 const ghost = document.getElementById('ghost-note');
+                const yOffset = e.isTouch ? -60 : 0;
                 ghost.style.left = e.clientX + 'px';
-                ghost.style.top = e.clientY + 'px';
+                ghost.style.top = (e.clientY + yOffset) + 'px';
 
                 let target = e.target;
-                
-                if (target.classList.contains('stone') || target.closest('.stone')) {
+                if (target && (target.classList.contains('stone') || target.closest('.stone'))) {
                     ghost.className = 'invalid';
-                    ghost.style.transform = 'translate(-50%, -50%) rotate(0deg)';
                 } else {
                     ghost.className = 'valid';
-                    ghost.style.transform = 'translate(-50%, -50%) rotate(-5deg)';
                 }
             }
 
@@ -570,28 +608,30 @@
                     if (e.target.classList.contains('folded-note')) {
                         const noteId = e.target.dataset.id;
                         this.readNote(noteId);
+                        return;
                     }
+                    this.openWriteModal();
                     return;
                 }
 
                 const target = e.target;
-                
-                if (target.classList.contains('stone') || target.closest('.stone')) {
+                if (target && (target.classList.contains('stone') || target.closest('.stone'))) {
                     this.showToast('נסה לכוון לחריצים בין האבנים', 'error');
                     const ghost = document.getElementById('ghost-note');
-                    ghost.style.animation = 'shake 0.3s';
-                    setTimeout(() => ghost.style.animation = '', 300);
+                    ghost.animate([
+                        { transform: 'translate(-50%, -50%) rotate(0deg)' },
+                        { transform: 'translate(-55%, -50%) rotate(-5deg)' },
+                        { transform: 'translate(-45%, -50%) rotate(5deg)' },
+                        { transform: 'translate(-50%, -50%) rotate(0deg)' }
+                    ], { duration: 300 });
                     return;
                 }
 
-                // Calculate Position as PERCENTAGE for Responsiveness
                 const rect = this.wallContainer.getBoundingClientRect();
                 const xPx = e.clientX - rect.left;
                 const yPx = e.clientY - rect.top;
-                
                 const xPct = (xPx / rect.width) * 100;
                 const yPct = (yPx / rect.height) * 100;
-                
                 const rot = Math.floor(Math.random() * 60) - 30;
 
                 const note = {
@@ -603,7 +643,6 @@
 
                 this.saveNoteData(note);
                 this.renderNoteOnWall(note); 
-                this.renderMenu();
                 this.showToast('הפתק הוטמן בהצלחה');
                 
                 document.getElementById('note-text').value = '';
@@ -614,17 +653,12 @@
                 const el = document.createElement('div');
                 el.className = 'folded-note';
                 el.dataset.id = note.id;
-                
                 const colorClass = 'note-c' + (Math.floor(Math.random() * 5) + 1);
                 el.classList.add(colorClass);
-
-                // Use % coordinates
                 el.style.left = note.x + '%';
                 el.style.top = note.y + '%';
                 el.style.transform = `translate(-50%, -50%) rotate(${note.rot}deg) scale(0)`;
-                
                 this.wallContainer.appendChild(el);
-
                 requestAnimationFrame(() => {
                     el.style.transition = 'transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
                     el.style.transform = `translate(-50%, -50%) rotate(${note.rot}deg) scale(1)`;
@@ -637,40 +671,13 @@
                 notes.forEach(note => {
                     const el = document.createElement('div');
                     el.className = 'folded-note';
-                    
                     const colorClass = 'note-c' + (Math.floor(Math.random() * 5) + 1);
                     el.classList.add(colorClass);
-
                     el.dataset.id = note.id;
                     el.style.left = note.x + '%';
                     el.style.top = note.y + '%';
                     el.style.transform = `translate(-50%, -50%) rotate(${note.rot}deg)`;
                     this.wallContainer.appendChild(el);
-                });
-            }
-
-            renderMenu() {
-                const list = document.getElementById('notes-list-container');
-                const notes = this.getNotes().sort((a,b) => b.createdAt - a.createdAt);
-                
-                list.innerHTML = '';
-                if (notes.length === 0) {
-                    list.innerHTML = '<div style="text-align:center; padding:20px; color:#999;">אין פתקים עדיין</div>';
-                    return;
-                }
-
-                notes.forEach(note => {
-                    const div = document.createElement('div');
-                    div.className = 'list-item';
-                    div.innerHTML = `
-                        <div style="font-size:0.8rem; color:#888;">${new Date(note.createdAt).toLocaleDateString('he-IL')}</div>
-                        <div style="margin-top:4px;">${note.text.substring(0, 30)}${note.text.length>30?'...':''}</div>
-                    `;
-                    div.onclick = () => {
-                        this.readNote(note.id);
-                        this.toggleMenu();
-                    };
-                    list.appendChild(div);
                 });
             }
 
@@ -684,15 +691,107 @@
                 }
             }
 
-            toggleMenu() {
-                document.getElementById('side-menu').classList.toggle('open');
-            }
-
             showToast(msg, type = 'success') {
                 const t = document.getElementById('toast');
                 t.textContent = msg;
                 t.className = `toast show ${type}`;
                 setTimeout(() => t.className = 'toast', 3000);
+            }
+
+            /* --- MENU LOGIC --- */
+            toggleMenu() {
+                const menu = document.getElementById('side-menu');
+                const isOpen = menu.classList.contains('open');
+                
+                if (isOpen) {
+                    menu.classList.remove('open');
+                } else {
+                    this.renderMenuMain(); // Reset to main view on open
+                    menu.classList.add('open');
+                }
+            }
+
+            renderMenuMain() {
+                this.menuState = 'main';
+                const container = document.getElementById('menu-content');
+                document.getElementById('menu-title').textContent = 'תפריט';
+                
+                container.innerHTML = `
+                    <div class="menu-item" onclick="app.renderMenuNotes()">
+                        <div class="menu-item-content">
+                            <span class="menu-icon">📝</span>
+                            <span class="menu-text">הפתקים שלי</span>
+                        </div>
+                        <span class="arrow">‹</span>
+                    </div>
+                    <div class="menu-item" onclick="app.renderMenuAbout()">
+                        <div class="menu-item-content">
+                            <span class="menu-icon">ℹ️</span>
+                            <span class="menu-text">אודות ופרטיות</span>
+                        </div>
+                        <span class="arrow">‹</span>
+                    </div>
+                    <div class="menu-item" onclick="app.resetData()" style="color:#d32f2f; margin-top:20px; border-color: rgba(211, 47, 47, 0.1);">
+                        <div class="menu-item-content">
+                            <span class="menu-icon">🗑️</span>
+                            <span class="menu-text">איפוס נתונים</span>
+                        </div>
+                    </div>
+                `;
+            }
+
+            renderMenuNotes() {
+                this.menuState = 'notes';
+                const container = document.getElementById('menu-content');
+                document.getElementById('menu-title').textContent = 'הפתקים שלי';
+                
+                const notes = this.getNotes().sort((a,b) => b.createdAt - a.createdAt);
+                
+                let html = `
+                    <div class="menu-subheader" onclick="app.renderMenuMain()">
+                        <span style="margin-left:8px; font-size:1.2rem;">›</span> חזרה לתפריט
+                    </div>
+                    <div class="notes-list">
+                `;
+
+                if (notes.length === 0) {
+                    html += `<div style="padding:30px; text-align:center; color:#999;">אין פתקים שמורים</div>`;
+                } else {
+                    notes.forEach(note => {
+                        const dateStr = new Date(note.createdAt).toLocaleDateString('he-IL');
+                        const preview = note.text.substring(0, 30) + (note.text.length > 30 ? '...' : '');
+                        html += `
+                            <div class="list-item" onclick="app.readNoteFromMenu('${note.id}')">
+                                <div class="list-item-date">${dateStr}</div>
+                                <div class="list-item-text">${preview}</div>
+                            </div>
+                        `;
+                    });
+                }
+                html += `</div>`;
+                container.innerHTML = html;
+            }
+
+            renderMenuAbout() {
+                this.menuState = 'about';
+                const container = document.getElementById('menu-content');
+                document.getElementById('menu-title').textContent = 'אודות';
+                
+                container.innerHTML = `
+                    <div class="menu-subheader" onclick="app.renderMenuMain()">
+                        <span style="margin-left:8px; font-size:1.2rem;">›</span> חזרה לתפריט
+                    </div>
+                    <div class="about-content">
+                        <h4>פתק לכותל | פרוטוטייפ דיגיטלי</h4>
+                        <p>האתר נועד לאפשר רגע של שקט וכתיבה אישית. </p>
+                        <p><strong>פרטיות מלאה:</strong> כל הפתקים נשמרים אך ורק על המכשיר שלך (localStorage). שום מידע לא נשלח לשרת חיצוני.</p>
+                    </div>
+                `;
+            }
+
+            readNoteFromMenu(id) {
+                this.toggleMenu(); // Close menu
+                this.readNote(id);
             }
 
             resetData() {
@@ -702,18 +801,6 @@
                 }
             }
         }
-
-        const style = document.createElement('style');
-        style.innerHTML = `
-            @keyframes shake {
-                0% { transform: translate(-50%, -50%) rotate(0deg); }
-                25% { transform: translate(-55%, -50%) rotate(-5deg); }
-                50% { transform: translate(-45%, -50%) rotate(5deg); }
-                75% { transform: translate(-55%, -50%) rotate(-5deg); }
-                100% { transform: translate(-50%, -50%) rotate(0deg); }
-            }
-        `;
-        document.head.appendChild(style);
 
         const app = new App();
     </script>
