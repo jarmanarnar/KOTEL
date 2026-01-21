@@ -6,6 +6,18 @@
     <title>פתק לכותל | חוויה ויזואלית</title>
     <meta name="theme-color" content="#d4c5a0">
     
+    <!-- PWA Settings -->
+    <meta name="theme-color" content="#dcd0ba">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="הכותל">
+    <meta name="mobile-web-app-capable" content="yes">
+    
+    <!-- PWA Manifest & Icons (Embedded) -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512' style='background:%232b2218'%3E%3Crect x='64' y='128' width='180' height='100' rx='8' fill='%23dcd0ba'/%3E%3Crect x='260' y='128' width='188' height='100' rx='8' fill='%23dcd0ba'/%3E%3Crect x='64' y='244' width='384' height='100' rx='8' fill='%23dcd0ba'/%3E%3C/svg%3E">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512' style='background:%232b2218'%3E%3Crect x='64' y='128' width='180' height='100' rx='8' fill='%23dcd0ba'/%3E%3Crect x='260' y='128' width='188' height='100' rx='8' fill='%23dcd0ba'/%3E%3Crect x='64' y='244' width='384' height='100' rx='8' fill='%23dcd0ba'/%3E%3C/svg%3E">
+    <link rel="manifest" href="data:application/manifest+json;charset=utf-8,%7B%22name%22%3A%22%D7%A4%D7%AA%D7%A7%20%D7%9C%D7%9B%D7%95%D7%AA%D7%9C%22%2C%22short_name%22%3A%22%D7%94%D7%9B%D7%95%D7%AA%D7%9C%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23dcd0ba%22%2C%22theme_color%22%3A%22%23dcd0ba%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22data%3Aimage%2Fsvg%2Bxml%2C%253Csvg%2520xmlns%253D%27http%253A%252F%252Fwww.w3.org%252F2000%252Fsvg%27%2520viewBox%253D%270%25200%2520512%2520512%27%2520style%253D%27background%253A%25232b2218%27%253E%253Crect%2520x%253D%2764%27%2520y%253D%27128%27%2520width%253D%27180%27%2520height%253D%27100%27%2520rx%253D%278%27%2520fill%253D%27%2523dcd0ba%27%252F%253E%253Crect%2520x%253D%27260%27%2520y%253D%27128%27%2520width%253D%27188%27%2520height%253D%27100%27%2520rx%253D%278%27%2520fill%253D%27%2523dcd0ba%27%252F%253E%253Crect%2520x%253D%2764%27%2520y%253D%27244%27%2520width%253D%27384%27%2520height%253D%27100%27%2520rx%253D%278%27%2520fill%253D%27%2523dcd0ba%27%252F%253E%253C%252Fsvg%253E%22%2C%22sizes%22%3A%22512x512%22%2C%22type%22%3A%22image%2Fsvg%2Bxml%22%7D%5D%7D">
+
     <style>
         /* =========================================
            1. CORE & RESET
@@ -23,6 +35,7 @@
             --text-muted: #757575;
             --bg-menu: #f8f6f1;
             --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            --font-serif: 'Frank Ruhl Libre', 'David', 'Times New Roman', serif;
         }
 
         * {
@@ -184,11 +197,11 @@
         .plant.dry .plant-leaf { background: #8a9665; }
 
         /* =========================================
-           5. UI OVERLAYS
+           5. UI OVERLAYS (Dark Gradient & Serif Title)
            ========================================= */
         .top-bar {
             position: fixed; top: 0; left: 0; right: 0;
-            padding: 15px 20px;
+            padding: 12px 20px;
             display: flex; 
             justify-content: space-between; 
             align-items: center;
@@ -197,20 +210,25 @@
         }
         .top-bar > * { pointer-events: auto; }
 
+        .app-title { 
+            font-family: var(--font-serif);
+            font-weight: 700; 
+            font-size: 1.5rem; 
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+            letter-spacing: -0.02em;
+        }
+
         .menu-btn {
-            background: rgba(255,255,255,0.15); backdrop-filter: blur(4px);
-            border: 1px solid rgba(255,255,255,0.25); color: white;
+            background: rgba(255,255,255,0.15); 
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255,255,255,0.25); 
+            color: white;
             padding: 10px; width: 44px; height: 44px;
             border-radius: 12px; font-size: 1.2rem; cursor: pointer;
             display: flex; align-items: center; justify-content: center;
-            transition: background 0.2s;
+            transition: all 0.2s;
         }
-        .menu-btn:hover { background: rgba(255,255,255,0.25); }
-
-        .app-title { 
-            font-weight: 700; font-size: 1.2rem; 
-            text-shadow: 0 2px 4px rgba(0,0,0,0.8); 
-        }
+        .menu-btn:hover { background: rgba(255,255,255,0.25); box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
 
         /* =========================================
            6. MODALS
@@ -238,6 +256,7 @@
         .paper-modal h2 {
             margin: 0 0 20px 0; color: var(--accent); text-align: center;
             border-bottom: 2px solid var(--accent); padding-bottom: 10px;
+            font-family: var(--font-serif);
         }
         .paper-textarea {
             width: 100%; height: 150px; background: transparent; border: none;
@@ -282,7 +301,7 @@
         .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
         .toast.error { background: #d32f2f; border-color: #ef5350; }
 
-        /* --- SIDE MENU (REDESIGNED) --- */
+        /* --- SIDE MENU --- */
         .side-menu {
             position: fixed; top: 0; right: 0; bottom: 0; width: 300px;
             background: var(--bg-menu); z-index: 300;
@@ -298,7 +317,7 @@
             padding: 10px 4px 20px 4px; 
             display: flex; justify-content: space-between; align-items: center; 
         }
-        .menu-title { font-weight: 800; font-size: 1.4rem; color: var(--text-main); letter-spacing: -0.5px; }
+        .menu-title { font-family: var(--font-serif); font-weight: 800; font-size: 1.6rem; color: var(--text-main); letter-spacing: -0.5px; }
         .close-menu-btn { 
             border: none; background: #eaeaea; color: #555; 
             width: 32px; height: 32px; border-radius: 50%; 
@@ -310,7 +329,6 @@
 
         .menu-content { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
         
-        /* Menu Items (Cards) */
         .menu-item {
             padding: 16px 20px;
             background: #fff;
@@ -333,7 +351,6 @@
         .menu-text { font-weight: 600; font-size: 1rem; }
         .menu-item .arrow { color: #ccc; font-size: 1.2rem; }
 
-        /* Notes List View */
         .notes-list { display: flex; flex-direction: column; gap: 10px; }
         .list-item { 
             padding: 16px 20px; 
@@ -348,7 +365,6 @@
         .list-item-date { font-size: 0.75rem; color: var(--accent); font-weight: 600; margin-bottom: 6px; }
         .list-item-text { font-size: 0.95rem; color: #444; line-height: 1.4; }
 
-        /* View Navigation Header */
         .menu-subheader {
             padding: 12px 0;
             margin-bottom: 8px;
@@ -363,7 +379,7 @@
             padding: 20px; background: #fff; border-radius: 12px; 
             border: 1px solid rgba(0,0,0,0.04); color: #444; line-height: 1.6; 
         }
-        .about-content h4 { margin-top: 0; color: var(--accent); margin-bottom: 10px;}
+        .about-content h4 { margin-top: 0; color: var(--accent); margin-bottom: 10px; font-family: var(--font-serif); font-size: 1.3rem;}
 
     </style>
 </head>
@@ -377,7 +393,7 @@
         <button class="menu-btn" onclick="app.toggleMenu()" aria-label="תפריט">
             ☰
         </button>
-        <div class="app-title">פתק לכותל</div>
+        <div class="app-title" id="app-title"></div>
         <div style="width: 44px;"></div>
     </div>
 
@@ -404,7 +420,7 @@
     <!-- READ MODAL -->
     <div class="modal-overlay" id="read-modal">
         <div class="paper-modal" style="background-image:none; background-color: white;">
-            <h2 id="read-date" style="font-size: 1rem; border:none; color:#666;"></h2>
+            <h2 id="read-date" style="font-size: 1.2rem; border:none; color:var(--text-main);"></h2>
             <p id="read-content" style="white-space: pre-wrap; font-size:1.1rem; line-height:1.6;"></p>
             <div class="modal-actions">
                 <button class="btn btn-cancel" onclick="document.getElementById('read-modal').classList.remove('active')">סגור</button>
@@ -436,6 +452,7 @@
                 
                 this.initWall();
                 this.loadNotesToWall();
+                this.updateTitleToHebrewDate();
                 
                 let resizeTimeout;
                 window.addEventListener('resize', () => {
@@ -455,6 +472,96 @@
                     const target = document.elementFromPoint(touch.clientX, touch.clientY);
                     this.handleMouseMove({ clientX: touch.clientX, clientY: touch.clientY, target: target, isTouch: true });
                 }, { passive: false });
+            }
+
+            // Gematria Helper - Properly recursive for all numbers up to 999
+            toHebrewNumeral(n) {
+                if (n <= 0) return "";
+                const letters = [
+                    {v:400, c:'ת'}, {v:300, c:'ש'}, {v:200, c:'ר'}, {v:100, c:'ק'},
+                    {v:90, c:'צ'}, {v:80, c:'פ'}, {v:70, c:'ע'}, {v:60, c:'ס'}, {v:50, c:'נ'}, {v:40, c:'מ'}, {v:30, c:'ל'}, {v:20, c:'כ'}, {v:10, c:'י'},
+                    {v:9, c:'ט'}, {v:8, c:'ח'}, {v:7, c:'ז'}, {v:6, c:'ו'}, {v:5, c:'ה'}, {v:4, c:'ד'}, {v:3, c:'ג'}, {v:2, c:'ב'}, {v:1, c:'א'}
+                ];
+                let str = "";
+                
+                // Handle 15/16 special cases only for the last 2 digits
+                const tens = n % 100;
+                if (tens === 15 || tens === 16) {
+                    // Process hundreds normally first
+                    const hundreds = Math.floor(n / 100) * 100;
+                    if(hundreds > 0) {
+                        str += this.toHebrewNumeral(hundreds);
+                    }
+                    return str + (tens === 15 ? 'טו' : 'טז');
+                }
+
+                for (let i = 0; i < letters.length; i++) {
+                    while (n >= letters[i].v) {
+                        str += letters[i].c;
+                        n -= letters[i].v;
+                    }
+                }
+                return str;
+            }
+
+            // Year Converter (e.g., 5786 -> התשפ״ו)
+            formatHebrewYear(yearNum) {
+                let str = '';
+                // Thousands
+                let thousands = Math.floor(yearNum / 1000);
+                let remainder = yearNum % 1000;
+                
+                if (thousands > 0) {
+                    const letters = ["", "א", "ב", "ג", "ד", "ה", "ו", "ז", "ח", "ט"];
+                    str += letters[thousands]; // Removed the geresh here
+                }
+                
+                // Remainder (e.g. 786 -> תשפו)
+                let remainderStr = this.toHebrewNumeral(remainder);
+                
+                // Add Gershayim before last letter
+                if(remainderStr.length > 1) {
+                    remainderStr = remainderStr.slice(0, -1) + '״' + remainderStr.slice(-1);
+                } else if (remainderStr.length === 1) {
+                    remainderStr += "'";
+                }
+                
+                return str + remainderStr;
+            }
+
+            getHebrewDateString(timestamp) {
+                const date = new Date(timestamp);
+                const opts = { calendar: 'hebrew', day: 'numeric', month: 'long', year: 'numeric' };
+                // Use generic locale to just get the numbers
+                const parts = new Intl.DateTimeFormat('en-u-ca-hebrew', opts).formatToParts(date);
+                
+                let dayNum, yearNum, monthName;
+                
+                parts.forEach(p => {
+                    if(p.type === 'day') dayNum = parseInt(p.value);
+                    if(p.type === 'year') yearNum = parseInt(p.value);
+                });
+
+                // Hebrew Month Name
+                monthName = new Intl.DateTimeFormat('he-IL-u-ca-hebrew', { month: 'long' }).format(date);
+                
+                // Convert Day to Gematria (and add geresh/gershayim inside helper logic if needed, but standard is just ' or " for day)
+                let dayHeb = this.toHebrewNumeral(dayNum);
+                if(dayHeb.length > 1 && !dayHeb.includes('״') && !dayHeb.includes('טו') && !dayHeb.includes('טז')) {
+                     dayHeb = dayHeb.slice(0, -1) + '״' + dayHeb.slice(-1);
+                } else if(dayHeb.length === 1) {
+                    dayHeb += "'";
+                }
+                
+                // Convert Year
+                const yearHeb = this.formatHebrewYear(yearNum);
+                
+                return `${dayHeb} ב${monthName} ${yearHeb}`;
+            }
+
+            updateTitleToHebrewDate() {
+                const dateStr = this.getHebrewDateString(Date.now());
+                document.getElementById('app-title').textContent = dateStr;
             }
 
             /* --- 1. WALL GENERATION --- */
@@ -686,7 +793,8 @@
                 const note = notes.find(n => n.id === id);
                 if(note) {
                     document.getElementById('read-content').textContent = note.text;
-                    document.getElementById('read-date').textContent = new Date(note.createdAt).toLocaleString('he-IL');
+                    // Use Hebrew date here
+                    document.getElementById('read-date').textContent = this.getHebrewDateString(note.createdAt);
                     document.getElementById('read-modal').classList.add('active');
                 }
             }
@@ -698,7 +806,7 @@
                 setTimeout(() => t.className = 'toast', 3000);
             }
 
-            /* --- MENU LOGIC --- */
+            /* --- MENU LOGIC (UPDATED WITH SVG ARROWS) --- */
             toggleMenu() {
                 const menu = document.getElementById('side-menu');
                 const isOpen = menu.classList.contains('open');
@@ -716,20 +824,23 @@
                 const container = document.getElementById('menu-content');
                 document.getElementById('menu-title').textContent = 'תפריט';
                 
+                // SVG Arrow Left for drilling down
+                const arrowLeft = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>`;
+
                 container.innerHTML = `
                     <div class="menu-item" onclick="app.renderMenuNotes()">
                         <div class="menu-item-content">
                             <span class="menu-icon">📝</span>
                             <span class="menu-text">הפתקים שלי</span>
                         </div>
-                        <span class="arrow">‹</span>
+                        <span class="arrow">${arrowLeft}</span>
                     </div>
                     <div class="menu-item" onclick="app.renderMenuAbout()">
                         <div class="menu-item-content">
                             <span class="menu-icon">ℹ️</span>
                             <span class="menu-text">אודות ופרטיות</span>
                         </div>
-                        <span class="arrow">‹</span>
+                        <span class="arrow">${arrowLeft}</span>
                     </div>
                     <div class="menu-item" onclick="app.resetData()" style="color:#d32f2f; margin-top:20px; border-color: rgba(211, 47, 47, 0.1);">
                         <div class="menu-item-content">
@@ -745,11 +856,14 @@
                 const container = document.getElementById('menu-content');
                 document.getElementById('menu-title').textContent = 'הפתקים שלי';
                 
+                // SVG Arrow Right for going back
+                const arrowRight = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-left:8px;"><path d="M9 18l6-6-6-6"/></svg>`;
+
                 const notes = this.getNotes().sort((a,b) => b.createdAt - a.createdAt);
                 
                 let html = `
                     <div class="menu-subheader" onclick="app.renderMenuMain()">
-                        <span style="margin-left:8px; font-size:1.2rem;">›</span> חזרה לתפריט
+                        ${arrowRight} חזרה לתפריט
                     </div>
                     <div class="notes-list">
                 `;
@@ -758,7 +872,7 @@
                     html += `<div style="padding:30px; text-align:center; color:#999;">אין פתקים שמורים</div>`;
                 } else {
                     notes.forEach(note => {
-                        const dateStr = new Date(note.createdAt).toLocaleDateString('he-IL');
+                        const dateStr = this.getHebrewDateString(note.createdAt);
                         const preview = note.text.substring(0, 30) + (note.text.length > 30 ? '...' : '');
                         html += `
                             <div class="list-item" onclick="app.readNoteFromMenu('${note.id}')">
@@ -777,9 +891,12 @@
                 const container = document.getElementById('menu-content');
                 document.getElementById('menu-title').textContent = 'אודות';
                 
+                // SVG Arrow Right for going back
+                const arrowRight = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-left:8px;"><path d="M9 18l6-6-6-6"/></svg>`;
+
                 container.innerHTML = `
                     <div class="menu-subheader" onclick="app.renderMenuMain()">
-                        <span style="margin-left:8px; font-size:1.2rem;">›</span> חזרה לתפריט
+                        ${arrowRight} חזרה לתפריט
                     </div>
                     <div class="about-content">
                         <h4>פתק לכותל | פרוטוטייפ דיגיטלי</h4>
