@@ -314,7 +314,7 @@
         .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
         .toast.error { background: #d32f2f; border-color: #ef5350; }
 
-        /* --- SIDE MENU --- */
+        /* --- SIDE MENU (RIGHT) --- */
         .side-menu {
             position: fixed; top: 0; right: 0; bottom: 0; width: 300px;
             background: var(--bg-menu); z-index: 300;
@@ -326,6 +326,18 @@
         }
         .side-menu.open { transform: translateX(0); }
         
+        /* --- ABOUT PANEL (LEFT) --- */
+        .about-panel {
+            position: fixed; top: 0; left: 0; bottom: 0; width: 300px;
+            background: var(--bg-menu); z-index: 300;
+            transform: translateX(-100%); /* Hidden to left */
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 5px 0 30px rgba(0,0,0,0.2); 
+            display: flex; flex-direction: column;
+            padding: 16px;
+        }
+        .about-panel.open { transform: translateX(0); }
+
         .menu-header { 
             padding: 10px 4px 20px 4px; 
             display: flex; justify-content: space-between; align-items: center; 
@@ -439,7 +451,7 @@
             ☰
         </button>
         <div class="app-title" id="app-title"></div>
-        <button class="menu-btn" onclick="app.openAbout()" aria-label="אודות" style="font-family: serif; font-style: italic; font-weight: bold;">
+        <button class="menu-btn" onclick="app.toggleAbout()" aria-label="אודות" style="font-family: serif; font-style: italic; font-weight: bold;">
             i
         </button>
     </div>
@@ -492,7 +504,7 @@
         </div>
     </div>
 
-    <!-- SIDE MENU -->
+    <!-- SIDE MENU (RIGHT) -->
     <div class="side-menu" id="side-menu">
         <div class="menu-header">
             <span class="menu-title" id="menu-title">תפריט</span>
@@ -501,6 +513,21 @@
         
         <div class="menu-content" id="menu-content">
             <!-- Content injected by JS -->
+        </div>
+    </div>
+
+    <!-- ABOUT PANEL (LEFT) -->
+    <div class="about-panel" id="about-panel">
+        <div class="menu-header">
+            <span class="menu-title">אודות</span>
+            <button class="close-menu-btn" onclick="app.toggleAbout()">✕</button>
+        </div>
+        <div class="menu-content">
+             <div class="about-content">
+                <h4>פתק לכותל | פרוטוטייפ דיגיטלי</h4>
+                <p>האתר נועד לאפשר רגע של שקט וכתיבה אישית. </p>
+                <p><strong>פרטיות מלאה:</strong> כל הפתקים נשמרים אך ורק על המכשיר שלך (localStorage). שום מידע לא נשלח לשרת חיצוני.</p>
+            </div>
         </div>
     </div>
 
@@ -908,6 +935,7 @@
                 const note = notes.find(n => n.id === id);
                 if(note) {
                     document.getElementById('read-content').textContent = note.text;
+                    // Use Hebrew date here
                     document.getElementById('read-date').textContent = this.getHebrewDateString(note.createdAt);
                     document.getElementById('read-modal').classList.add('active');
                 }
@@ -933,10 +961,15 @@
                 }
             }
 
-            openAbout() {
-                const menu = document.getElementById('side-menu');
-                menu.classList.add('open');
-                this.renderMenuAbout();
+            toggleAbout() {
+                const panel = document.getElementById('about-panel');
+                const isOpen = panel.classList.contains('open');
+                
+                if (isOpen) {
+                    panel.classList.remove('open');
+                } else {
+                    panel.classList.add('open');
+                }
             }
 
             renderMenuMain() {
@@ -995,25 +1028,6 @@
                 }
                 html += `</div>`;
                 container.innerHTML = html;
-            }
-
-            renderMenuAbout() {
-                this.menuState = 'about';
-                const container = document.getElementById('menu-content');
-                document.getElementById('menu-title').textContent = 'אודות';
-                
-                const arrowRight = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-left:8px;"><path d="M9 18l6-6-6-6"/></svg>`;
-
-                container.innerHTML = `
-                    <div class="menu-subheader" onclick="app.renderMenuMain()">
-                        ${arrowRight} חזרה לתפריט
-                    </div>
-                    <div class="about-content">
-                        <h4>פתק לכותל | פרוטוטייפ דיגיטלי</h4>
-                        <p>האתר נועד לאפשר רגע של שקט וכתיבה אישית. </p>
-                        <p><strong>פרטיות מלאה:</strong> כל הפתקים נשמרים אך ורק על המכשיר שלך (localStorage). שום מידע לא נשלח לשרת חיצוני.</p>
-                    </div>
-                `;
             }
 
             readNoteFromMenu(id) {
