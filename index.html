@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>פתק לכותל | חוויה דיגיטלית</title>
+    <title>פתק לכותל</title>
     <meta name="theme-color" content="#d4c5a0">
     
     <!-- PWA Settings -->
@@ -267,6 +267,19 @@
         .btn-cancel { background: #f0f0f0; color: #666; }
         .btn-submit { background: var(--accent); color: white; }
 
+        /* HELPER LINK (NEW FEATURE) */
+        .helper-link {
+            text-align: center;
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: var(--accent);
+            text-decoration: underline;
+            cursor: pointer;
+            opacity: 0.8;
+            transition: opacity 0.2s;
+        }
+        .helper-link:hover { opacity: 1; }
+
         .instruction-banner {
             position: fixed; 
             bottom: 40px; 
@@ -381,6 +394,38 @@
         }
         .about-content h4 { margin-top: 0; color: var(--accent); margin-bottom: 10px; font-family: var(--font-serif); font-size: 1.3rem;}
 
+        /* TEMPLATE SELECTOR STYLES */
+        .templates-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: #fff;
+            border-radius: 16px;
+            padding: 20px;
+            z-index: 10; /* Above text area */
+            display: none;
+            flex-direction: column;
+        }
+        .templates-overlay.active { display: flex; }
+        
+        .templates-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px;
+        }
+        .templates-header h3 { margin: 0; color: var(--accent); font-family: var(--font-serif); }
+        .close-templates-btn { background: none; border: none; font-size: 1.2rem; cursor: pointer; color: #999; }
+        
+        .templates-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
+        .template-item {
+            padding: 12px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: all 0.2s;
+        }
+        .template-item:hover { background: #fff; border-color: var(--accent); box-shadow: 0 2px 6px rgba(0,0,0,0.05); }
+        .template-title { font-weight: 700; font-size: 0.95rem; color: #333; margin-bottom: 4px; }
+        .template-preview { font-size: 0.85rem; color: #666; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
     </style>
 </head>
 <body>
@@ -411,7 +456,24 @@
     <div class="modal-overlay" id="write-modal">
         <div class="paper-modal" id="paper-modal-content">
             <h2>כתיבת פתק</h2>
+            
+            <!-- Template Overlay Container (Hidden by default) -->
+            <div class="templates-overlay" id="templates-overlay">
+                <div class="templates-header">
+                    <h3>בחר נוסח</h3>
+                    <button class="close-templates-btn" onclick="app.closeTemplates()">✕</button>
+                </div>
+                <div class="templates-list" id="templates-list">
+                    <!-- Injected by JS -->
+                </div>
+            </div>
+
             <textarea id="note-text" class="paper-textarea" placeholder="כתוב כאן את התפילה או הבקשה שלך..."></textarea>
+            
+            <div class="helper-link" onclick="app.openTemplates()">
+                זקוק להשראה? בחר תפילה מוכנה
+            </div>
+
             <div class="modal-actions">
                 <button class="btn btn-cancel" onclick="app.closeWriteModal()">ביטול</button>
                 <button class="btn btn-submit" onclick="app.startPlacing()">קפל והטמן</button>
@@ -452,6 +514,15 @@
                 this.isPlacing = false;
                 this.menuState = 'main'; 
                 
+                // Templates Data
+                this.templates = [
+                    { title: 'שיר למעלות (תהילים קכ״א)', text: 'שִׁיר לַמַּעֲלוֹת: אֶשָּׂא עֵינַי אֶל הֶהָרִים מֵאַיִן יָבֹא עֶזְרִי. עֶזְרִי מֵעִם יְהוָה עֹשֵׂה שָׁמַיִם וָאָרֶץ. אַל יִתֵּן לַמּוֹט רַגְלֶךָ אַל יָנוּם שֹׁמְרֶךָ. הִנֵּה לֹא יָנוּם וְלֹא יִישָׁן שֹׁמֵר יִשְׂרָאֵל. יְהוָה שֹׁמְרֶךָ יְהוָה צִלְּךָ עַל יַד יְמִינֶךָ. יוֹמָם הַשֶּׁמֶשׁ לֹא יַכֶּכָּה וְיָרֵחַ בַּלָּיְלָה. יְהוָה יִשְׁמָרְךָ מִכָּל רָע יִשְׁמֹר אֶת נַפְשֶׁךָ. יְהוָה יִשְׁמָר צֵאתְךָ וּבוֹאֶךָ מֵעַתָּה וְעַד עוֹלָם.' },
+                    { title: 'תפילה לרפואה', text: 'יהי רצון מלפניך ה׳ אלוהינו ואלוהי אבותינו, שתשלח מהרה רפואה שלמה מן השמים, רפואת הנפש ורפואת הגוף לחולה (שם החולה), בתוך שאר חולי עמך ישראל.' },
+                    { title: 'בקשת פרנסה', text: 'אנא ה׳, פתח לנו שערי פרנסה וכלכלה, שערי ברכה והצלחה. ברך את מעשה ידינו ותן לנו שפע, ברכה והצלחה בכל אשר נעשה.' },
+                    { title: 'תפילה לשלום', text: 'שים שלום טובה וברכה, חיים חן וחסד ורחמים, עלינו ועל כל ישראל עמך. וברכנו אבינו כולנו כאחד באור פניך.' },
+                    { title: 'תפילה כללית', text: 'מודה אני לפניך על כל הטוב שגמלת עמי. יהי רצון שתמשיך להאיר את דרכי, לשמור עלי ועל משפחתי, ולתת לנו כוח לעשות טוב ולהיות טובים.' }
+                ];
+
                 this.initWall();
                 this.loadNotesToWall();
                 this.updateTitleToHebrewDate();
@@ -475,26 +546,50 @@
                     this.handleMouseMove({ clientX: touch.clientX, clientY: touch.clientY, target: target, isTouch: true });
                 }, { passive: false });
                 
-                // Add touchend listener for reliable mobile placement
                 this.wallContainer.addEventListener('touchend', (e) => {
                     if (!this.isPlacing) return;
-                    
-                    // Logic from handleWallClick, essentially
-                    // Prevent default click behavior to handle it here
                     e.preventDefault();
-                    
                     const touch = e.changedTouches[0];
-                    const visualY = touch.clientY - 60; // Offset match
+                    const visualY = touch.clientY - 60; 
                     const target = document.elementFromPoint(touch.clientX, visualY);
-                    
-                    // Validate target at offset
                     if (target && (target.classList.contains('stone') || target.closest('.stone'))) {
                         this.showToast('נסה לכוון לחריצים בין האבנים', 'error');
                         return;
                     }
-                    
                     this.attemptPlacement(touch.clientX, visualY);
                 });
+            }
+
+            /* --- TEMPLATE LOGIC --- */
+            openTemplates() {
+                const overlay = document.getElementById('templates-overlay');
+                const list = document.getElementById('templates-list');
+                
+                // Populate List
+                list.innerHTML = '';
+                this.templates.forEach(tpl => {
+                    const item = document.createElement('div');
+                    item.className = 'template-item';
+                    item.innerHTML = `
+                        <div class="template-title">${tpl.title}</div>
+                        <div class="template-preview">${tpl.text}</div>
+                    `;
+                    item.onclick = () => this.applyTemplate(tpl.text);
+                    list.appendChild(item);
+                });
+
+                overlay.classList.add('active');
+            }
+
+            closeTemplates() {
+                document.getElementById('templates-overlay').classList.remove('active');
+            }
+
+            applyTemplate(text) {
+                const textarea = document.getElementById('note-text');
+                textarea.value = text;
+                this.closeTemplates();
+                textarea.focus();
             }
 
             // Gematria Helper - Properly recursive for all numbers up to 999
@@ -507,10 +602,8 @@
                 ];
                 let str = "";
                 
-                // Handle 15/16 special cases only for the last 2 digits
                 const tens = n % 100;
                 if (tens === 15 || tens === 16) {
-                    // Process hundreds normally first
                     const hundreds = Math.floor(n / 100) * 100;
                     if(hundreds > 0) {
                         str += this.toHebrewNumeral(hundreds);
@@ -527,22 +620,18 @@
                 return str;
             }
 
-            // Year Converter (e.g., 5786 -> התשפ״ו)
             formatHebrewYear(yearNum) {
                 let str = '';
-                // Thousands
                 let thousands = Math.floor(yearNum / 1000);
                 let remainder = yearNum % 1000;
                 
                 if (thousands > 0) {
                     const letters = ["", "א", "ב", "ג", "ד", "ה", "ו", "ז", "ח", "ט"];
-                    str += letters[thousands]; // Removed the geresh here
+                    str += letters[thousands]; 
                 }
                 
-                // Remainder (e.g. 786 -> תשפו)
                 let remainderStr = this.toHebrewNumeral(remainder);
                 
-                // Add Gershayim before last letter
                 if(remainderStr.length > 1) {
                     remainderStr = remainderStr.slice(0, -1) + '״' + remainderStr.slice(-1);
                 } else if (remainderStr.length === 1) {
@@ -555,7 +644,6 @@
             getHebrewDateString(timestamp) {
                 const date = new Date(timestamp);
                 const opts = { calendar: 'hebrew', day: 'numeric', month: 'long', year: 'numeric' };
-                // Use generic locale to just get the numbers
                 const parts = new Intl.DateTimeFormat('en-u-ca-hebrew', opts).formatToParts(date);
                 
                 let dayNum, yearNum, monthName;
@@ -565,10 +653,8 @@
                     if(p.type === 'year') yearNum = parseInt(p.value);
                 });
 
-                // Hebrew Month Name
                 monthName = new Intl.DateTimeFormat('he-IL-u-ca-hebrew', { month: 'long' }).format(date);
                 
-                // Convert Day to Gematria
                 let dayHeb = this.toHebrewNumeral(dayNum);
                 if(dayHeb.length > 1 && !dayHeb.includes('״') && !dayHeb.includes('טו') && !dayHeb.includes('טז')) {
                      dayHeb = dayHeb.slice(0, -1) + '״' + dayHeb.slice(-1);
@@ -576,7 +662,6 @@
                     dayHeb += "'";
                 }
                 
-                // Convert Year
                 const yearHeb = this.formatHebrewYear(yearNum);
                 
                 return `${dayHeb} ב${monthName} ${yearHeb}`;
@@ -687,6 +772,7 @@
 
             closeWriteModal() {
                 document.getElementById('write-modal').classList.remove('active');
+                this.closeTemplates(); // Also close template overlay if open
             }
 
             startPlacing() {
@@ -759,26 +845,19 @@
             }
 
             handleWallClick(e) {
-                // CASE 1: NOT PLACING -> OPEN WRITE MODAL
                 if (!this.isPlacing) {
-                    // Check if clicked an existing note
                     if (e.target.classList.contains('folded-note')) {
                         const noteId = e.target.dataset.id;
                         this.readNote(noteId);
                         return;
                     }
-                    // If clicked anywhere else on wall, start writing
                     this.openWriteModal();
                     return;
                 }
 
-                // CASE 2: PLACING MODE (Mouse)
                 const target = e.target;
-                
-                // Safety check for target existence
                 if (target && (target.classList.contains('stone') || target.closest('.stone'))) {
                     this.showToast('נסה לכוון לחריצים בין האבנים', 'error');
-                    // Shake animation
                     const ghost = document.getElementById('ghost-note');
                     ghost.animate([
                         { transform: 'translate(-50%, -50%) rotate(0deg)' },
@@ -796,16 +875,12 @@
                 const el = document.createElement('div');
                 el.className = 'folded-note';
                 el.dataset.id = note.id;
-                
                 const colorClass = 'note-c' + (Math.floor(Math.random() * 5) + 1);
                 el.classList.add(colorClass);
-
                 el.style.left = note.x + '%';
                 el.style.top = note.y + '%';
                 el.style.transform = `translate(-50%, -50%) rotate(${note.rot}deg) scale(0)`;
-                
                 this.wallContainer.appendChild(el);
-
                 requestAnimationFrame(() => {
                     el.style.transition = 'transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
                     el.style.transform = `translate(-50%, -50%) rotate(${note.rot}deg) scale(1)`;
@@ -833,7 +908,6 @@
                 const note = notes.find(n => n.id === id);
                 if(note) {
                     document.getElementById('read-content').textContent = note.text;
-                    // Use Hebrew date here
                     document.getElementById('read-date').textContent = this.getHebrewDateString(note.createdAt);
                     document.getElementById('read-modal').classList.add('active');
                 }
@@ -846,7 +920,7 @@
                 setTimeout(() => t.className = 'toast', 3000);
             }
 
-            /* --- MENU LOGIC (UPDATED WITH SVG ARROWS) --- */
+            /* --- MENU LOGIC --- */
             toggleMenu() {
                 const menu = document.getElementById('side-menu');
                 const isOpen = menu.classList.contains('open');
@@ -854,7 +928,7 @@
                 if (isOpen) {
                     menu.classList.remove('open');
                 } else {
-                    this.renderMenuMain(); // Reset to main view on open
+                    this.renderMenuMain(); 
                     menu.classList.add('open');
                 }
             }
@@ -870,7 +944,6 @@
                 const container = document.getElementById('menu-content');
                 document.getElementById('menu-title').textContent = 'תפריט';
                 
-                // SVG Arrow Left for drilling down
                 const arrowLeft = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>`;
 
                 container.innerHTML = `
@@ -895,7 +968,6 @@
                 const container = document.getElementById('menu-content');
                 document.getElementById('menu-title').textContent = 'הפתקים שלי';
                 
-                // SVG Arrow Right for going back
                 const arrowRight = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-left:8px;"><path d="M9 18l6-6-6-6"/></svg>`;
 
                 const notes = this.getNotes().sort((a,b) => b.createdAt - a.createdAt);
@@ -930,7 +1002,6 @@
                 const container = document.getElementById('menu-content');
                 document.getElementById('menu-title').textContent = 'אודות';
                 
-                // SVG Arrow Right for going back
                 const arrowRight = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-left:8px;"><path d="M9 18l6-6-6-6"/></svg>`;
 
                 container.innerHTML = `
